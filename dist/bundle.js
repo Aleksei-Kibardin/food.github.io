@@ -13,114 +13,111 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 function calc() {
-    	//___________-calc-_________________
+  //___________-calc-_________________
+  const result = document.querySelector('#result');
+  let sex, height, weight, age, ratio;
 
-	const result = document.querySelector('#result');
+  if (localStorage.getItem('sex')) {
+    sex = localStorage.getItem('sex');
+  } else {
+    sex = 'female';
+    localStorage.setItem('sex', 'female');
+  }
 
-	let sex, height, weight, age, ratio;
+  if (localStorage.getItem('ratio')) {
+    ratio = localStorage.getItem('sex');
+  } else {
+    ratio = 1.375;
+    localStorage.setItem('ratio', 1.375);
+  }
 
-	if (localStorage.getItem('sex')) {
-		sex = localStorage.getItem('sex');
-	} else {
-		sex = 'female'
-		localStorage.setItem('sex', 'female')
-	}
+  function localShow(select, activeClass) {
+    const elements = document.querySelectorAll(select);
+    elements.forEach(elem => {
+      elem.classList.remove(activeClass);
 
-	if (localStorage.getItem('ratio')) {
-		ratio = localStorage.getItem('sex');
-	} else {
-		ratio = 1.375
-		localStorage.setItem('ratio', 1.375)
-	}
+      if (elem.getAttribute('id') === localStorage.getItem('sex')) {
+        elem.classList.add(activeClass);
+      }
 
-	 function localShow(select, activeClass) {
-		 const elements = document.querySelectorAll(select);
+      if (elem.getAttribute('data-ratio') === localStorage.getItem('ratio')) {
+        elem.classList.add(activeClass);
+      }
+    });
+  }
 
-		 elements.forEach(elem =>{
-			elem.classList.remove(activeClass)
-			if (elem.getAttribute('id') === localStorage.getItem('sex')) {
-				elem.classList.add(activeClass);
-			} 
-			if (elem.getAttribute('data-ratio') === localStorage.getItem('ratio')) {
-				elem.classList.add(activeClass);
-			}
-		 });
-	 }
-	 localShow('#gender div', 'calculating__choose-item_active');
-	 localShow('.calculating__choose_big div', 'calculating__choose-item_active');
-	function calcTotal() {
-		if(!sex || !height || !weight || !age || !ratio){
-			 result.textContent = ''
-			 return;
-		}
+  localShow('#gender div', 'calculating__choose-item_active');
+  localShow('.calculating__choose_big div', 'calculating__choose-item_active');
 
-		if (sex === 'female') {
-			
-			result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio) + ' калл';
-		} else {
-			
-			result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio) + ' калл';
-		}
-	}
+  function calcTotal() {
+    if (!sex || !height || !weight || !age || !ratio) {
+      result.textContent = '';
+      return;
+    }
 
-	calcTotal();
+    if (sex === 'female') {
+      result.textContent = Math.round((447.6 + 9.2 * weight + 3.1 * height - 4.3 * age) * ratio) + ' калл';
+    } else {
+      result.textContent = Math.round((88.36 + 13.4 * weight + 4.8 * height - 5.7 * age) * ratio) + ' калл';
+    }
+  }
 
-	function getStaticInformation(selector, activeClass) {
-		const elements = document.querySelectorAll(selector);
+  calcTotal();
 
-			elements.forEach(elem => {
-				elem.addEventListener('click', (e) => {
-					if (e.target.getAttribute('data-ratio')) {
-						ratio = +e.target.getAttribute('data-ratio');
-						localStorage.setItem('ratio', +e.target.getAttribute('data-ratio'))
-					} else {
-						sex = e.target.getAttribute('id');
-						localStorage.setItem('sex', e.target.getAttribute('id'))
-					}
-						elements.forEach(elem => {
-							elem.classList.remove(activeClass);
-						});
+  function getStaticInformation(selector, activeClass) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(elem => {
+      elem.addEventListener('click', e => {
+        if (e.target.getAttribute('data-ratio')) {
+          ratio = +e.target.getAttribute('data-ratio');
+          localStorage.setItem('ratio', +e.target.getAttribute('data-ratio'));
+        } else {
+          sex = e.target.getAttribute('id');
+          localStorage.setItem('sex', e.target.getAttribute('id'));
+        }
 
-						e.target.classList.add(activeClass);
-						
-						calcTotal();
-			});
-		});
-	}
+        elements.forEach(elem => {
+          elem.classList.remove(activeClass);
+        });
+        e.target.classList.add(activeClass);
+        calcTotal();
+      });
+    });
+  }
 
-	getStaticInformation('#gender div', 'calculating__choose-item_active');
-	getStaticInformation('.calculating__choose_big div', 'calculating__choose-item_active');
+  getStaticInformation('#gender div', 'calculating__choose-item_active');
+  getStaticInformation('.calculating__choose_big div', 'calculating__choose-item_active');
 
+  function getDynamicInformation(selector) {
+    const input = document.querySelector(selector);
+    input.addEventListener('input', () => {
+      if (input.value.match(/\D/g)) {
+        input.style.border = '1px solid red';
+      } else {
+        input.style.border = 'none';
+      }
 
-	function getDynamicInformation(selector) {
-		const input = document.querySelector(selector);
+      switch (input.getAttribute('id')) {
+        case 'height':
+          height = +input.value;
+          break;
 
-		input.addEventListener('input', ()=>{
+        case 'weight':
+          weight = +input.value;
+          break;
 
-			if (input.value.match(/\D/g)) {
-				input.style.border = '1px solid red'
-			} else {
-				input.style.border = 'none'
-			}
+        case 'age':
+          age = +input.value;
+          break;
+      }
 
-			switch (input.getAttribute('id')) {
-				case 'height':
-					height = +input.value;
-					break;
-				case 'weight':
-					weight = +input.value;
-					break;
-				case 'age':
-					age = +input.value;
-					break;
-			}
-			calcTotal();
-		});
-	}
-	getDynamicInformation('#height');
-	getDynamicInformation('#weight');
-	getDynamicInformation('#age');
+      calcTotal();
+    });
+  }
 
+  getDynamicInformation('#height');
+  getDynamicInformation('#weight');
+  getDynamicInformation('#age');
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (calc);
@@ -141,20 +138,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function cards() {
-    
-	
+  (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResoursce)('http://localhost:3000/menu').then(data => createCard(data));
 
-	(0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResoursce)('http://localhost:3000/menu')
-		.then(data => createCard(data));
-
-	function createCard(data) {
-		data.forEach(({img, altimg, title, descr, price}) => {
-			const element = document.createElement('div');
-			const Price = price * 27;
-			element.classList.add('menu__item');
-
-
-			element.innerHTML = `
+  function createCard(data) {
+    data.forEach(_ref => {
+      let {
+        img,
+        altimg,
+        title,
+        descr,
+        price
+      } = _ref;
+      const element = document.createElement('div');
+      const Price = price * 27;
+      element.classList.add('menu__item');
+      element.innerHTML = `
 				<img src=${img} alt=${altimg}>
 				<h3 class="menu__item-subtitle">${title}</h3>
 				<div class="menu__item-descr">${descr}</div>
@@ -164,13 +162,9 @@ function cards() {
 					<div class="menu__item-total"><span>${Price}</span> грн/день</div>
 				</div>
 		`;
-
-		
-
-		document.querySelector('.menu .container').append(element);
-		});
-	}
-
+      document.querySelector('.menu .container').append(element);
+    });
+  }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (cards);
@@ -192,77 +186,64 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function forms(modalTimerId){
-    	//__________________FORMS___________________
-	const forms = document.querySelectorAll('form');
+function forms(modalTimerId) {
+  //__________________FORMS___________________
+  const forms = document.querySelectorAll('form');
+  const message = {
+    loading: 'img/form/spinner.svg',
+    success: 'спасибо мы скоро свяжемся с вами',
+    failure: 'ошибка, попробуйте еще раз'
+  };
+  forms.forEach(i => bindPostData(i));
 
-	const message = {
-		loading: 'img/form/spinner.svg',
-		success: 'спасибо мы скоро свяжемся с вами',
-		failure: 'ошибка, попробуйте еще раз'
-	}
+  function bindPostData(form) {
+    form.addEventListener('submit', e => {
+      e.preventDefault(); // отключение стандартного поведения браузера(перезагрузка страницы)
 
-	forms.forEach(i => bindPostData(i));
-
-
-
-
-
-
-
-	function bindPostData(form){
-		form.addEventListener('submit', (e) => {
-			e.preventDefault();// отключение стандартного поведения браузера(перезагрузка страницы)
-
-			const statusMessage = document.createElement('img');
-			statusMessage.src = message.loading;
-			statusMessage.style.cssText = `
+      const statusMessage = document.createElement('img');
+      statusMessage.src = message.loading;
+      statusMessage.style.cssText = `
 			display: block;
 			margin: 0 auto;
 			`;
+      form.insertAdjacentElement('afterend', statusMessage); //добавляем statusMessage в форму
 
-			form.insertAdjacentElement('afterend', statusMessage)//добавляем statusMessage в форму
+      const formData = new FormData(form); // создаем обьект formData
 
-			const formData = new FormData(form);// создаем обьект formData
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
+      (0,_services_services__WEBPACK_IMPORTED_MODULE_1__.postData)('http://localhost:3000/requests', json).then(data => {
+        console.log(data);
+        showThanksModal(message.success);
+        statusMessage.remove();
+      }).catch(() => {
+        showThanksModal(message.failure);
+      }).finally(() => {
+        form.reset();
+      });
+    });
+  } //____
 
-			const json = JSON.stringify(Object.fromEntries(formData.entries()));
- 
-			(0,_services_services__WEBPACK_IMPORTED_MODULE_1__.postData)('http://localhost:3000/requests', json )
-			.then(data => {
-				console.log(data);
-				showThanksModal(message.success);
-				statusMessage.remove();
-			}).catch(() => {
-				showThanksModal(message.failure);
-			}).finally(() =>{
-				form.reset();
-			})
-		});
-	}
-	//____
-	function showThanksModal(message){
-		const prevModalDilog = document.querySelector('.modal__dialog');
 
-		prevModalDilog.classList.add('hide');
-		(0,_modal__WEBPACK_IMPORTED_MODULE_0__.openModal)('.modal', modalTimerId);
-
-		const thanksModal = document.createElement('div');
-		thanksModal.classList.add('modal__dialog');
-		thanksModal.innerHTML = `
+  function showThanksModal(message) {
+    const prevModalDilog = document.querySelector('.modal__dialog');
+    prevModalDilog.classList.add('hide');
+    (0,_modal__WEBPACK_IMPORTED_MODULE_0__.openModal)('.modal', modalTimerId);
+    const thanksModal = document.createElement('div');
+    thanksModal.classList.add('modal__dialog');
+    thanksModal.innerHTML = `
 			<div class="modal__content">
 				<div data-close="" class="modal__close">×</div>
 				<div class="modal__title">${message}</div>
 			</.div>
 		`;
-		
-		document.querySelector('.modal').append(thanksModal);
-		setTimeout(() =>{
-			thanksModal.remove();
-			prevModalDilog.classList.add('show');
-			prevModalDilog.classList.remove('hide');
-			(0,_modal__WEBPACK_IMPORTED_MODULE_0__.closeModal)('.modal');
-		}, 4000);
-	}
+    document.querySelector('.modal').append(thanksModal);
+    setTimeout(() => {
+      thanksModal.remove();
+      prevModalDilog.classList.add('show');
+      prevModalDilog.classList.remove('hide');
+      (0,_modal__WEBPACK_IMPORTED_MODULE_0__.closeModal)('.modal');
+    }, 4000);
+  }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (forms);
@@ -281,68 +262,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "closeModal": () => (/* binding */ closeModal),
 /* harmony export */   "openModal": () => (/* binding */ openModal)
 /* harmony export */ });
-	function openModal(modalSelector, modalTimerId){
-		const mod = document.querySelector(modalSelector);
-		
-		mod.classList.remove('hide');
-		mod.classList.add('show');
-		document.body.style.overflow = 'hidden';
+function openModal(modalSelector, modalTimerId) {
+  const mod = document.querySelector(modalSelector);
+  mod.classList.remove('hide');
+  mod.classList.add('show');
+  document.body.style.overflow = 'hidden';
 
-		if (modalTimerId) {
-			clearInterval(modalTimerId);
-		}
-		
-	}
-	
-	function closeModal(modalSelector) {
-		const mod = document.querySelector(modalSelector);
+  if (modalTimerId) {
+    clearInterval(modalTimerId);
+  }
+}
 
-		mod.classList.add('hide');
-		mod.classList.remove('show');
-		document.body.style.overflow = '';
-	} 
+function closeModal(modalSelector) {
+  const mod = document.querySelector(modalSelector);
+  mod.classList.add('hide');
+  mod.classList.remove('show');
+  document.body.style.overflow = '';
+}
 
-function modal(triggerSelector, modalSelector, modalTimerId){    
-	
-	const btnModal = document.querySelectorAll(triggerSelector),
-    	  modal = document.querySelector(modalSelector);
+function modal(triggerSelector, modalSelector, modalTimerId) {
+  const btnModal = document.querySelectorAll(triggerSelector),
+        modal = document.querySelector(modalSelector); //scrollModal	
 
-    
-    //scrollModal	
-    function showModalScroll() {
-        if(window.pageYOffset + document.documentElement.clientHeight >= 
-        document.documentElement.scrollHeight) {
-            openModal(modalSelector, modalTimerId);
-            window.removeEventListener('scroll', showModalScroll);
-        }
+  function showModalScroll() {
+    if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+      openModal(modalSelector, modalTimerId);
+      window.removeEventListener('scroll', showModalScroll);
     }
-    window.addEventListener('scroll', showModalScroll);
+  }
 
-    //Modal
+  window.addEventListener('scroll', showModalScroll); //Modal
 
-
-	btnModal.forEach(btn =>{
-		btn.addEventListener('click', () =>  openModal(modalSelector, modalTimerId));
-	})	
-
-
-	modal.addEventListener('click', (e)=>{
-		if(e.target === modal || e.target.getAttribute('data-close') == '' ){
-			closeModal(modalSelector);
-		}
-	})
-
-	document.addEventListener('keydown', (e)=>{
-		if(e.code === 'Escape'){
-			closeModal(modalSelector);
-		}
-	})
+  btnModal.forEach(btn => {
+    btn.addEventListener('click', () => openModal(modalSelector, modalTimerId));
+  });
+  modal.addEventListener('click', e => {
+    if (e.target === modal || e.target.getAttribute('data-close') == '') {
+      closeModal(modalSelector);
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Escape') {
+      closeModal(modalSelector);
+    }
+  });
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (modal);
 
 
- 
 
 /***/ }),
 
@@ -357,147 +325,126 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 function slider() {
-    //_______________SLIDER_______________
+  //_______________SLIDER_______________
+  const slides = document.querySelectorAll('.offer__slide'),
+        slider = document.querySelector('.offer__slider'),
+        slidesWarapper = document.querySelector('.offer__slider-wrapper'),
+        slidesField = document.querySelector('.offer__slider-inner'),
+        btnNext = document.querySelector('.offer__slider-next'),
+        btnPrev = document.querySelector('.offer__slider-prev'),
+        current = document.querySelector('#current'),
+        total = document.querySelector('#total'),
+        width = window.getComputedStyle(slidesField).width;
+  let offset = 0;
+  let slideIndex = 1; //{{{{{{{{{{{{{__________Nav______________
 
-	
-	const slides = document.querySelectorAll('.offer__slide'),
-    slider = document.querySelector('.offer__slider'),
-    slidesWarapper = document.querySelector('.offer__slider-wrapper'),
-    slidesField = document.querySelector('.offer__slider-inner'),
-    btnNext = document.querySelector('.offer__slider-next'),
-    btnPrev = document.querySelector('.offer__slider-prev'),
-    current = document.querySelector('#current'), 
-    total = document.querySelector('#total'),
-    width = window.getComputedStyle(slidesField).width;
+  slider.style.position = 'relative';
 
-    let  offset = 0;
-    let slideIndex = 1;
+  function createPoint() {
+    const el = document.createElement('div');
+    el.classList.add('carousel-indicators');
+    slider.append(el);
+    slides.forEach(a => {
+      const dot = document.createElement('div');
+      el.append(dot);
+      dot.classList.add('dot');
+    });
+  }
 
-    //{{{{{{{{{{{{{__________Nav______________
-    slider.style.position = 'relative';
-    function createPoint(){
-        const el = document.createElement('div');
-        el.classList.add('carousel-indicators');
-        slider.append(el);
-        slides.forEach(a =>{
-            const dot = document.createElement('div');
-            el.append(dot);
-            dot.classList.add('dot');		
-        });
-    };
-    createPoint();
-
-    const dot = document.querySelectorAll('.dot'),
+  ;
+  createPoint();
+  const dot = document.querySelectorAll('.dot'),
         dotWrap = document.querySelector('.carousel-indicators');
 
+  function hideGovno() {
+    dot.forEach(item => {
+      item.style.opacity = '0.6';
+    });
+  }
 
-    function hideGovno(){
-        dot.forEach(item =>{
-            item.style.opacity = '0.6';
-        })
+  hideGovno();
+  dotWrap.addEventListener('click', e => {
+    if (e.target) {
+      dot.forEach((item, i) => {
+        if (e.target == item) {
+          hideGovno();
+          dot[i].style.opacity = '1';
+          offset = i * +width.slice(0, width.length - 2);
+          slidesField.style.transform = `translate(-${offset}px)`;
+          slideIndex = i + 1;
 
-    }
-    hideGovno();
-
-    dotWrap.addEventListener('click', (e) =>{
-        if(e.target){
-            dot.forEach((item, i) =>{
-                if(e.target == item){
-                    hideGovno();
-                    dot[i].style.opacity = '1';
-                    offset = i * +width.slice(0, width.length -2);
-                    slidesField.style.transform = `translate(-${offset}px)`;
-                    
-                    slideIndex = i + 1;
-
-                    if (slides.length < 10){
-                        current.textContent = `0${slideIndex}`;
-                    } else {
-                        current.textContent = slideIndex;
-                    }
-                
-                }
-            });
+          if (slides.length < 10) {
+            current.textContent = `0${slideIndex}`;
+          } else {
+            current.textContent = slideIndex;
+          }
         }
-    })
+      });
+    }
+  }); //____________________________________________}}}}}}}}}
 
+  if (slides.length < 10) {
+    total.textContent = `0${slides.length}`;
+    current.textContent = `0${slideIndex}`;
+  } else {
+    total.textContent = slides.length;
+    current.textContent = slideIndex;
+  }
 
-    //____________________________________________}}}}}}}}}
-
-
-
-
-    if(slides.length < 10) {
-        total.textContent = `0${slides.length}`;
-        current.textContent = `0${slideIndex}`;
+  slidesField.style.width = 100 * slides.length + '%';
+  slidesField.style.display = 'flex';
+  slidesField.style.transition = '0.5s all';
+  slidesWarapper.style.overflow = 'hidden';
+  slides.forEach(slide => {
+    slide.style.width;
+  });
+  btnNext.addEventListener('click', () => {
+    if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
+      offset = 0;
     } else {
-        total.textContent = slides.length;
-        current.textContent = slideIndex;
+      offset += +width.slice(0, width.length - 2);
     }
 
-    slidesField.style.width = 100 * slides.length + '%';
-    slidesField.style.display = 'flex';
-    slidesField.style.transition = '0.5s all';
+    slidesField.style.transform = `translate(-${offset}px)`;
+    hideGovno();
+    dot[offset / +width.slice(0, width.length - 2)].style.opacity = '1';
 
-    slidesWarapper.style.overflow = 'hidden';
+    if (slideIndex == slides.length) {
+      slideIndex = 1;
+    } else {
+      slideIndex++;
+    }
 
-    slides.forEach(slide => {
-        slide.style.width;
-    });
+    if (slides.length < 10) {
+      current.textContent = `0${slideIndex}`;
+    } else {
+      current.textContent = slideIndex;
+    }
+  });
+  btnPrev.addEventListener('click', () => {
+    if (offset == 0) {
+      offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+    } else {
+      offset -= +width.slice(0, width.length - 2);
+    }
 
-    btnNext.addEventListener('click', () => {
-        if(offset == +width.slice(0, width.length -2) * (slides.length - 1)){
-            offset = 0
-        } else {
-            offset += +width.slice(0, width.length -2);
-            
-        }
+    slidesField.style.transform = `translate(-${offset}px)`;
+    hideGovno();
+    dot[offset / +width.slice(0, width.length - 2)].style.opacity = '1';
 
-        slidesField.style.transform = `translate(-${offset}px)`;
-        
-        hideGovno();
-        dot[offset / +width.slice(0, width.length -2)].style.opacity = '1';
+    if (slideIndex == 1) {
+      slideIndex = slides.length;
+    } else {
+      slideIndex--;
+    }
 
-        if (slideIndex == slides.length){
-            slideIndex = 1;
-        } else {
-            slideIndex++;
-        }
-
-        if (slides.length < 10){
-            current.textContent = `0${slideIndex}`;
-        } else {
-            current.textContent = slideIndex;
-        }
-        
-        
-    });
-
-    btnPrev.addEventListener('click', () => {
-        if(offset == 0){
-            offset = +width.slice(0, width.length -2) * (slides.length - 1);
-        } else {
-            offset -= +width.slice(0, width.length -2);
-        }
-        
-        slidesField.style.transform = `translate(-${offset}px)`;
-
-        hideGovno();
-        dot[offset / +width.slice(0, width.length -2)].style.opacity = '1';
-
-        if (slideIndex == 1){
-            slideIndex = slides.length;
-        } else {
-            slideIndex--;
-        }
-
-        if (slides.length < 10){
-            current.textContent = `0${slideIndex}`;
-        } else {
-            current.textContent = slideIndex;
-        }
-    });
-    dot[offset].style.opacity = '1';
+    if (slides.length < 10) {
+      current.textContent = `0${slideIndex}`;
+    } else {
+      current.textContent = slideIndex;
+    }
+  });
+  dot[offset].style.opacity = '1';
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (slider);
@@ -514,41 +461,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function tabs() {
-    const tabs = document.querySelectorAll('.tabheader__item'),
-    tabsContent = document.querySelectorAll('.tabcontent'),
-    tabsParent = document.querySelector('.tabheader__items');
+function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, activeClaas) {
+  const tabs = document.querySelectorAll(tabsSelector),
+        tabsContent = document.querySelectorAll(tabsContentSelector),
+        tabsParent = document.querySelector(tabsParentSelector);
 
-    function hideTabContent() {
-        tabsContent.forEach(item => {
-            item.classList.add('hide');
-            item.classList.remove('show', 'fade');
-        });
-
-        tabs.forEach(item => {
-            item.classList.remove('tabheader__item_active');
-        });
-    }
-
-    function showTabContent(i = 0) {
-        tabsContent[i].classList.add('show', 'fade');
-        tabsContent[i].classList.remove('hide');
-        tabs[i].classList.add('tabheader__item_active');
-    }
-
-    hideTabContent();
-    showTabContent();
-
-    tabsParent.addEventListener('click', (e) =>{
-        if(e.target && e.target.classList.contains('tabheader__item')){
-            tabs.forEach((item, i) =>{
-                if(e.target == item){
-                    hideTabContent();
-                    showTabContent(i);
-                }
-            });
-        }
+  function hideTabContent() {
+    tabsContent.forEach(item => {
+      item.classList.add('hide');
+      item.classList.remove('show', 'fade');
     });
+    tabs.forEach(item => {
+      item.classList.remove(activeClaas);
+    });
+  }
+
+  function showTabContent() {
+    let i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    tabsContent[i].classList.add('show', 'fade');
+    tabsContent[i].classList.remove('hide');
+    tabs[i].classList.add(activeClaas);
+  }
+
+  hideTabContent();
+  showTabContent();
+  tabsParent.addEventListener('click', e => {
+    if (e.target && e.target.classList.contains(tabsSelector.slice(1))) {
+      tabs.forEach((item, i) => {
+        if (e.target == item) {
+          hideTabContent();
+          showTabContent(i);
+        }
+      });
+    }
+  });
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabs);
@@ -565,51 +511,45 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function time() {
-    //TIME
-	const deadLine = "2022-06-17";
-	function getTimeRemaining(endTime)	{
-		const t = Date.parse(endTime) - Date.parse(new Date()),
-			  days = Math.floor(t / (1000 * 60 * 60 * 24)),
-			  hours = Math.floor(t / (1000 * 60 * 60) % 24),
-			  minutes = Math.floor((t / 1000 / 60) % 60),
-			  seconds = Math.floor((t / 1000) % 60);
+function time(id, deadLine) {
+  //TIME
+  function getTimeRemaining(endTime) {
+    const t = Date.parse(endTime) - Date.parse(new Date()),
+          days = Math.floor(t / (1000 * 60 * 60 * 24)),
+          hours = Math.floor(t / (1000 * 60 * 60) % 24),
+          minutes = Math.floor(t / 1000 / 60 % 60),
+          seconds = Math.floor(t / 1000 % 60);
+    return {
+      'total': t,
+      'days': days,
+      'hours': hours,
+      'minutes': minutes,
+      'seconds': seconds
+    };
+  }
 
-		return {
-			'total': t,
-			'days': days,
-			'hours': hours,
-			'minutes': minutes,
-			'seconds': seconds
-		};
-	}
+  function setClock(selector, endTime) {
+    const timer = document.querySelector(selector),
+          days = timer.querySelector('#days'),
+          hours = timer.querySelector('#hours'),
+          minutes = timer.querySelector('#minutes'),
+          seconds = timer.querySelector('#seconds'),
+          timeInterval = setInterval(updateClock, 1000);
 
-	function setClock(selector, endTime){
-		const timer = document.querySelector(selector),
-			  days = timer.querySelector('#days'),
-			  hours = timer.querySelector('#hours'),
-			  minutes = timer.querySelector('#minutes'),
-			  seconds = timer.querySelector('#seconds'),
-			  timeInterval = setInterval(updateClock, 1000);
-		
-		
-		
-    	function updateClock () {
-			const t = getTimeRemaining(endTime);
+    function updateClock() {
+      const t = getTimeRemaining(endTime);
+      days.innerHTML = t.days;
+      hours.innerHTML = t.hours;
+      minutes.innerHTML = t.minutes;
+      seconds.innerHTML = t.seconds;
 
-			days.innerHTML = t.days;
-			hours.innerHTML = t.hours;
-			minutes.innerHTML = t.minutes;
-			seconds.innerHTML = t.seconds; 
+      if (t.total <= 0) {
+        clearInterval(timeInterval);
+      }
+    }
+  }
 
-			if(t.total <= 0){
-				clearInterval(timeInterval);
-			}
-		}
-	}
-
-	setClock('.timer', deadLine);
-
+  setClock(id, deadLine);
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (time);
@@ -628,21 +568,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "postData": () => (/* binding */ postData)
 /* harmony export */ });
 async function postData(url, data) {
-    const res = await fetch(url, {
-        method: "POST",
-        headers: {'Content-type': 'application/json'},
-        body: data
-    });
-
-    return await res.json();  
-};
-
-async function getResoursce (url) {
-    const res = await fetch(url);
-
-    return await res.json();
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: data
+  });
+  return await res.json();
 }
 
+;
+
+async function getResoursce(url) {
+  const res = await fetch(url);
+  return await res.json();
+}
 
 
 
@@ -729,18 +670,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-window.addEventListener('DOMContentLoaded', () =>{
-	const modalTimerId = setTimeout(() => (0,_modules_modal__WEBPACK_IMPORTED_MODULE_3__.openModal)('.modal', modalTimerId), 30000);
-
-	(0,_modules_tabs__WEBPACK_IMPORTED_MODULE_5__["default"])();
-	(0,_modules_modal__WEBPACK_IMPORTED_MODULE_3__["default"])('[data-modal]', '.modal', modalTimerId);
-	(0,_modules_time__WEBPACK_IMPORTED_MODULE_6__["default"])();
-	(0,_modules_cards__WEBPACK_IMPORTED_MODULE_1__["default"])();
-	(0,_modules_calc__WEBPACK_IMPORTED_MODULE_0__["default"])();
-	(0,_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])(modalTimerId);
-	(0,_modules_slider__WEBPACK_IMPORTED_MODULE_4__["default"])();
+window.addEventListener('DOMContentLoaded', () => {
+  const modalTimerId = setTimeout(() => (0,_modules_modal__WEBPACK_IMPORTED_MODULE_3__.openModal)('.modal', modalTimerId), 60000);
+  (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_5__["default"])('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_3__["default"])('[data-modal]', '.modal');
+  (0,_modules_time__WEBPACK_IMPORTED_MODULE_6__["default"])('.timer', '2023-06-17');
+  (0,_modules_cards__WEBPACK_IMPORTED_MODULE_1__["default"])();
+  (0,_modules_calc__WEBPACK_IMPORTED_MODULE_0__["default"])();
+  (0,_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])(modalTimerId);
+  (0,_modules_slider__WEBPACK_IMPORTED_MODULE_4__["default"])();
 });
-
 })();
 
 /******/ })()
