@@ -9,11 +9,12 @@ import  time  from'./modules/time';
 import {openModal} from './modules/modal';
 
 window.addEventListener('DOMContentLoaded', () =>{
-	const modalTimerId = setTimeout(() => openModal('.modal', modalTimerId), 30000);
+
+	const modalTimerId = setTimeout(() => openModal('.modal', modalTimerId), 60000);
 
 	tabs('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
-	modal('[data-modal]', '.modal', modalTimerId);
-	time('.timer', '2022-06-17');
+	modal('[data-modal]', '.modal');
+	time('.timer', '2023-06-17');
 	cards();
 	calc();
 	forms(modalTimerId);
