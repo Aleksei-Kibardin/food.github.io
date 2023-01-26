@@ -4,7 +4,7 @@ function cards() {
     
 	
 
-	getResoursce('http://localhost:3000/menu')
+	getResoursce('/db.json')
 		.then(data => createCard(data));
 
 	function createCard(data) {
