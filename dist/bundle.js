@@ -138,10 +138,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function cards() {
-  (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResoursce)('http://localhost:3000/menu').then(data => createCard(data));
+  (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResoursce)("https://my-json-server.typicode.com/Aleksei-Kibardin/food.github.io/db", {
+    mode: 'cors'
+  }).then(data => createCard(data));
 
   function createCard(data) {
-    data.forEach(_ref => {
+    Object.keys.data.forEach(_ref => {
       let {
         img,
         altimg,
@@ -211,7 +213,7 @@ function forms(modalTimerId) {
       const formData = new FormData(form); // создаем обьект formData
 
       const json = JSON.stringify(Object.fromEntries(formData.entries()));
-      (0,_services_services__WEBPACK_IMPORTED_MODULE_1__.postData)('http://localhost:3000/requests', json).then(data => {
+      (0,_services_services__WEBPACK_IMPORTED_MODULE_1__.postData)("https://my-json-server.typicode.com/Aleksei-Kibardin/food.github.io/requests", json).then(data => {
         console.log(data);
         showThanksModal(message.success);
         statusMessage.remove();

@@ -36,7 +36,7 @@ function forms(modalTimerId){
 
 			const json = JSON.stringify(Object.fromEntries(formData.entries()));
  
-			postData('http://localhost:3000/requests', json )
+			postData("https://my-json-server.typicode.com/Aleksei-Kibardin/food.github.io/requests", json )
 			.then(data => {
 				console.log(data);
 				showThanksModal(message.success);
