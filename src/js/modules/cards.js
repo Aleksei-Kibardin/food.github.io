@@ -4,11 +4,11 @@ function cards() {
     
 	
 
-	getResoursce("https://my-json-server.typicode.com/Aleksei-Kibardin/food.github.io/db", {mode: 'cors'})
+	getResoursce("https://my-json-server.typicode.com/Aleksei-Kibardin/food.github.io/menu", {mode: 'cors'})
 		.then(data => createCard(data));
 
 	function createCard(data) {
-		Object.keys.data.forEach(({img, altimg, title, descr, price}) => {
+		data.forEach(({img, altimg, title, descr, price}) => {
 			const element = document.createElement('div');
 			const Price = price * 27;
 			element.classList.add('menu__item');
