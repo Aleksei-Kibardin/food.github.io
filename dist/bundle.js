@@ -153,7 +153,8 @@ function cards() {
       } = _ref;
       const element = document.createElement('div');
       const Price = price * 27;
-      element.classList.add('menu__item');
+      element.classList.add('menu__item'); //test
+
       element.innerHTML = `
 				<img src=${img} alt=${altimg}>
 				<h3 class="menu__item-subtitle">${title}</h3>
