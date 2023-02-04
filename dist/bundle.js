@@ -138,12 +138,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function cards() {
-  (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResoursce)("https://my-json-server.typicode.com/Aleksei-Kibardin/food.github.io/db", {
+  (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResoursce)("https://my-json-server.typicode.com/Aleksei-Kibardin/food.github.io/menu", {
     mode: 'cors'
   }).then(data => createCard(data));
 
   function createCard(data) {
-    Object.keys.data.forEach(_ref => {
+    data.forEach(_ref => {
       let {
         img,
         altimg,
